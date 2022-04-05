@@ -1,0 +1,72 @@
+{
+	"name": "vscode-springboot-dependency-versions",
+	"displayName": "Show Springboot dependency version properties and values.",
+	"icon": "images/icon.png",
+	"description": "Show Springboot dependency version properties and values and actual GAVs of dependencies in a Gradle based Springboot project.",
+	"version": "1.0.10",
+	"license": "LICENSE.md",
+	"publisher": "sandipchitale",
+	"author": {
+		"name": "Sandip Chitale"
+	},
+	"maintainers": [
+		"Sandip Chitale <sandipchitale@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sandipchitale/vscode-springboot-dependency-versions"
+	},
+	"engines": {
+		"vscode": "^1.63.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"extensionDependencies": [
+		"vscjava.vscode-gradle"
+	],
+	"activationEvents": [
+		"onCommand:vscode-springboot-dependency-versions.show"
+	],
+	"main": "./out/extension.js",
+	"preview": true,
+	"contributes": {
+		"commands": [
+			{
+				"command": "vscode-springboot-dependency-versions.show",
+				"title": "Display Springboot dependency version properties and values",
+				"icon": "$(versions)"
+			}
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "vscode-springboot-dependency-versions.show",
+					"when": "view =~ /^gradleTasksView$/",
+					"group": "navigation"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.2.2",
+		"@types/node": "14.x",
+		"@types/vscode": "^1.63.0",
+		"@typescript-eslint/eslint-plugin": "^4.26.0",
+		"@typescript-eslint/parser": "^4.26.0",
+		"eslint": "^7.27.0",
+		"glob": "^7.1.7",
+		"mocha": "^8.4.0",
+		"typescript": "^4.3.2",
+		"vscode-test": "^1.5.2"
+	}
+}

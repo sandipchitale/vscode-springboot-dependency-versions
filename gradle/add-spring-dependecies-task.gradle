@@ -1,0 +1,50 @@
+allprojects {
+    afterEvaluate { project ->
+        def springbootProject = project.plugins.hasPlugin('org.springframework.boot')
+
+        // Where the property names are generated. See:
+        // https://github.com/spring-projects/spring-boot/blob/25d8888aff804233086685db962c5aeeb22215e2/buildSrc/src/main/java/org/springframework/boot/build/bom/Library.java#L70
+        // https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-dependencies/build.gradle
+        if (springbootProject) {
+            task springbootDependencies() {
+                group 'springboot-dependencies'
+                description 'Show the Springboot Depencencies version properties'
+
+                doLast {
+                    // Capture requested dependencies
+                    def requestedDeps = [] as Set;
+                    configurations.all.each {
+                        if (it.canBeResolved) {
+                            it.incoming.getResolutionResult().getAllDependencies().each { depResult  ->
+                                def requestedSplit = "${depResult.getRequested()}".split(':')
+                                requestedDeps += "${requestedSplit[0]}:${requestedSplit[1]}"
+                            }
+                        }
+                    }
+                    if (dependencyManagement.importedProperties) {
+                        println '\n'
+                        println 'Managed dependency version properties and versions'
+                        println '\n'
+                        println sprintf('%-40s | %25s', 'Version Property', 'Version')
+                        println '\n'
+                        dependencyManagement.importedProperties.sort().each {
+                            println sprintf('%-40s | %25s', it.key, it.value)
+                        }
+                    }
+                    if (dependencyManagement.managedVersions) {
+                        println '\n'
+                        println 'Managed dependency gid:aids and actual versions.'
+                        println '\n'
+                        println sprintf('%-85s | %25s', 'Group Id:Artifact Id', 'Actual Version')
+                        println '\n'
+                        dependencyManagement.managedVersions.sort().each {
+                            if ("${it.key}" in requestedDeps) {
+                                println sprintf('%-85s | %25s', it.key, it.value)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
